@@ -6,9 +6,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+#include <fsl_crc.h>
 #include "fsl_common.h"
 #include "fsl_adapter_crc.h"
-#include "fsl_crc.h"
 
 /*******************************************************************************
  * Code

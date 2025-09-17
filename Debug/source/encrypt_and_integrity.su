@@ -1,0 +1,8 @@
+C:\Users\grtre\Documents\MCUXpressoIDE_25.6.136\workspace\EmbeddedIoT\phy/fsl_phy.h:147:24:PHY_Init	16	static
+C:\Users\grtre\Documents\MCUXpressoIDE_25.6.136\workspace\EmbeddedIoT\phy/fsl_phy.h:191:24:PHY_GetAutoNegotiationStatus	16	static
+C:\Users\grtre\Documents\MCUXpressoIDE_25.6.136\workspace\EmbeddedIoT\phy/fsl_phy.h:206:24:PHY_GetLinkStatus	16	static
+C:\Users\grtre\Documents\MCUXpressoIDE_25.6.136\workspace\EmbeddedIoT\phy/fsl_phy.h:223:24:PHY_GetLinkSpeedDuplex	24	static
+../source/fsl_enet.h:1187:20:ENET_ActiveRead	16	static
+../source/encrypt_and_integrity.c:125:6:encrypt_and_integrity_PHY_INIT	136	static
+../source/encrypt_and_integrity.c:218:6:encrypt_and_integrity_send	1248	static
+../source/encrypt_and_integrity.c:268:6:encrypt_and_integrity_ENET_TX	40	static
