@@ -101,7 +101,7 @@ int main(void)
         if (choice == '1') {
             message =  M1;
         } else if (choice == '2') {
-           strcpy(message,M2);
+           message = M2;
         } else if (choice == '3') {
 
             message = M3;
@@ -142,7 +142,7 @@ int main(void)
             PRINTF("Invalid choice. Please enter a number between 1 and 16.\n");
         }
         len = strlen(message);
-        encrypt_and_integrity_send(message, len - 1);
+        encrypt_and_integrity_send(message, len);
        /// end of application ///
         if(encrypt_and_integrity_receive())
         {

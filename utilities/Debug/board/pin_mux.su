@@ -1,5 +1,0 @@
-C:\Users\grtre\Documents\MCUXpressoIDE_25.6.136\workspace\frdmk64f_enet_txrx_transfer\drivers/fsl_clock.h:668:20:CLOCK_EnableClock	24	static
-C:\Users\grtre\Documents\MCUXpressoIDE_25.6.136\workspace\frdmk64f_enet_txrx_transfer\drivers/fsl_port.h:271:20:PORT_SetPinConfig	32	static
-C:\Users\grtre\Documents\MCUXpressoIDE_25.6.136\workspace\frdmk64f_enet_txrx_transfer\drivers/fsl_port.h:374:20:PORT_SetPinMux	24	static
-../board/pin_mux.c:37:6:BOARD_InitBootPins	8	static
-../board/pin_mux.c:73:6:BOARD_InitPins	16	static

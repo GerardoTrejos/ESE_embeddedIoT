@@ -12,7 +12,7 @@
 
 
 //* Define Messages Macros **//
-#define  M1 "No todo lo que es oro reluce..."
+#define  M1 "No todo lo que es oro reluce...."
 #define  M2 "Aún en la oscuridad..."
 #define  M3 "¿Qué es la vida?"
 #define  M4 "No temas a la oscuridad..."
