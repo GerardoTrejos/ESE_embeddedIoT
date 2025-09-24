@@ -21,7 +21,8 @@
 #include "fsl_sysmpu.h"
 
 #include "aes.h"
-#include "encrypt_and_integrity.h"
+#include <security.h>
+#include "security_cfg.h"
 /*FROM ENET EXAMPLE
  *
 
@@ -81,14 +82,13 @@
 
 
 
-//variables for KEY and IV
 
-const uint8_t  key_cfg[] = { 0x60, 0x3d, 0xeb, 0x10, 0x15, 0xca, 0x71, 0xbe, 0x2b, 0x73, 0xae, 0xf0, 0x85, 0x7d, 0x77,
-				 0x81, 0x1f, 0x35, 0x2c, 0x07, 0x3b, 0x61, 0x08, 0xd7, 0x2d, 0x98, 0x10, 0xa3, 0x09, 0x14,
-				 0xdf, 0xf4};
+//const uint8_t  key_cfg[] = { 0x60, 0x3d, 0xeb, 0x10, 0x15, 0xca, 0x71, 0xbe, 0x2b, 0x73, 0xae, 0xf0, 0x85, 0x7d, 0x77,
+//				 0x81, 0x1f, 0x35, 0x2c, 0x07, 0x3b, 0x61, 0x08, 0xd7, 0x2d, 0x98, 0x10, 0xa3, 0x09, 0x14,
+//				 0xdf, 0xf4};
 
-const uint8_t iv_cfg[]  = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
-				  0x0f };
+//const uint8_t iv_cfg[]  = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+//				  0x0f };
 
 
 
@@ -261,31 +261,22 @@ void encrypt_and_integrity_send(const uint8_t* message, uint32_t len )
 
 	//*  using AES128 *//
 	 struct AES_ctx ctx;
-	 AES_init_ctx_iv(&ctx, key_cfg, iv_cfg);
-	 PRINTF("vector b4 encrypt: %u\r\n", strlen(encrypted_vector));
+	 AES_init_ctx_iv(&ctx, KEY_AES, IV_AES);
+//	 PRINTF("vector b4 encrypt: %u\r\n", strlen(encrypted_vector));
 	 AES_CBC_encrypt_buffer(&ctx, encrypted_vector, payload_len);
 //	PRINTF("vector justafter encrypt: %u\r\n", strlen(encrypted_vector));
 
 	 /*Creating Package to be sent */
 	 memcpy(&package,mac_dest, MAC_SIZE);
 	 memcpy(&package[MAC_SIZE],mac_origen, MAC_SIZE);
-	 PRINTF("packg just w macs: %u\r\n", strlen(package));
 
-
-	 payload_len ;
-
+	 payload_len +14 ;
 	 package[12] = (payload_len >> 8) & 0xFFU;
 	 package[13] = payload_len & 0xFFU;
 	// package[12] = 0x88;
 	// package[13] = 0xB5;
 
-	 for(int i =0 ; i < payload_len -14 ; i++)
-	 {
-		 package[14 + i] = *(encrypted_vector + i);
-
-	 }
-
-	 memcpy(&package[14], encrypted_vector, strlen(encrypted_vector));
+	 memcpy(&package[14], encrypted_vector, payload_len );
 
 
 	 PRINTF("len encrypted vector: %u\r\n", payload_len);
@@ -293,21 +284,6 @@ void encrypt_and_integrity_send(const uint8_t* message, uint32_t len )
 
 	 PRINTF("ENET_BuildFrame: payload_len=%u header[12]=0x%02X header[13]=0x%02X\r\n",
 	 		   payload_len, package[12], package[13]);
-
-	 // determine if payload has the minimum len to be sent through ethernet.
-
-
-
-
-// ENET Send package through  Ethernet.
-/*
-	 if(payload_len < 64 )
-	 {
-		 EthernetPadding = 64 - payload_len;
-		 memset(&package[payload_len], EthernetPadding, EthernetPadding );
-
-	 }
-*/
 
 	 encrypt_and_integrity_ENET_TX(package, payload_len+14);
 
@@ -419,7 +395,7 @@ void encrypt_and_integrity_decrypt(const uint8_t *data, uint32_t length)
 
 		 // Decrypt in-place
 		struct AES_ctx ctx;
-	    AES_init_ctx_iv(&ctx, key_cfg, iv_cfg);
+	    AES_init_ctx_iv(&ctx, KEY_AES, IV_AES);
 	    AES_CBC_decrypt_buffer(&ctx, vector_decrypt, vector_len);
 
 	    //removing padding 0z

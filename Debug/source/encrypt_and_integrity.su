@@ -4,8 +4,8 @@ C:\Users\grtre\Documents\MCUXpressoIDE_25.6.136\workspace\EthernetPractica1_enet
 C:\Users\grtre\Documents\MCUXpressoIDE_25.6.136\workspace\EthernetPractica1_enet_txrx_transfer\phy/fsl_phy.h:206:24:PHY_GetLinkStatus	16	static
 C:\Users\grtre\Documents\MCUXpressoIDE_25.6.136\workspace\EthernetPractica1_enet_txrx_transfer\phy/fsl_phy.h:223:24:PHY_GetLinkSpeedDuplex	24	static
 C:\Users\grtre\Documents\MCUXpressoIDE_25.6.136\workspace\EthernetPractica1_enet_txrx_transfer\drivers/fsl_sysmpu.h:268:20:SYSMPU_Enable	16	static
-../source/encrypt_and_integrity.c:139:10:encrypt_and_integrity_INIT	112	static
-../source/encrypt_and_integrity.c:240:6:encrypt_and_integrity_send	1232	static
-../source/encrypt_and_integrity.c:324:6:encrypt_and_integrity_ENET_TX	40	static
-../source/encrypt_and_integrity.c:351:10:encrypt_and_integrity_receive	48	static
-../source/encrypt_and_integrity.c:387:6:encrypt_and_integrity_decrypt	248	static
+../source/encrypt_and_integrity.c:141:10:encrypt_and_integrity_INIT	112	static
+../source/encrypt_and_integrity.c:242:6:encrypt_and_integrity_send	1224	static
+../source/encrypt_and_integrity.c:299:6:encrypt_and_integrity_ENET_TX	40	static
+../source/encrypt_and_integrity.c:326:10:encrypt_and_integrity_receive	48	static
+../source/encrypt_and_integrity.c:362:6:encrypt_and_integrity_decrypt	248	static

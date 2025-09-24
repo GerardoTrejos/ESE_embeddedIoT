@@ -6,12 +6,12 @@
  */
 
 
-#ifndef ENCRYPT_AND_INTEGRITY_H_
-#define ENCRYPT_AND_INTEGRITY_H_
+#ifndef SECURITY_H_
+#define SECURITY_H_
 
+#include <security_cfg.h>
 #include <stdint.h>
 #include <stddef.h>
-#include "encrypt_and_integrity_cfg.h"
 
 #define MAX_MSG 1488
 #define MAC_SIZE 6
@@ -39,4 +39,4 @@ status_t encrypt_and_integrity_receive();
 status_t encrypt_and_integrity_INIT();
 void encrypt_and_integrity_decrypt(const uint8_t *data, uint32_t length);
 
-#endif /* ENCRYPT_AND_INTEGRITY_H_ */
+#endif /* SECURITY_H_ */

@@ -5,20 +5,20 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../source/aes.c \
-../source/encrypt_and_integrity.c \
-../source/enet_txrx_transfer.c \
+../source/app.c \
+../source/security.c \
 ../source/semihost_hardfault.c 
 
 C_DEPS += \
 ./source/aes.d \
-./source/encrypt_and_integrity.d \
-./source/enet_txrx_transfer.d \
+./source/app.d \
+./source/security.d \
 ./source/semihost_hardfault.d 
 
 OBJS += \
 ./source/aes.o \
-./source/encrypt_and_integrity.o \
-./source/enet_txrx_transfer.o \
+./source/app.o \
+./source/security.o \
 ./source/semihost_hardfault.o 
 
 
@@ -34,7 +34,7 @@ source/%.o: ../source/%.c source/subdir.mk
 clean: clean-source
 
 clean-source:
-	-$(RM) ./source/aes.d ./source/aes.o ./source/encrypt_and_integrity.d ./source/encrypt_and_integrity.o ./source/enet_txrx_transfer.d ./source/enet_txrx_transfer.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o
+	-$(RM) ./source/aes.d ./source/aes.o ./source/app.d ./source/app.o ./source/security.d ./source/security.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o
 
 .PHONY: clean-source
 

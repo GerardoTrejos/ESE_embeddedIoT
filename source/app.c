@@ -20,8 +20,8 @@
 #include "fsl_common.h"
 #include "fsl_sysmpu.h"
 
-#include "encrypt_and_integrity.h"
-#include "encrypt_and_integrity_cfg.h"
+#include <security.h>
+#include <security_cfg.h>
 
 #include <string.h>
 /* @TEST_ANCHOR */
