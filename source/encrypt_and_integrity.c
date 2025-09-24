@@ -243,10 +243,9 @@ void encrypt_and_integrity_send(const uint8_t* message, uint32_t len )
 	uint8_t mac_origen[6] = MAC_K64 ;
 	uint8_t  mac_dest[6] = MAC_PC;
 	uint32_t payload_len;
-	uint8_t EthernetPadding;
 
 	//// determine padding and adding it to encrypt
-	 uint8_t  bytes_needed = (16 - (len % 16)) %16;
+	 uint8_t  bytes_needed = (16 - (len % 16));
 
 	 payload_len = len + bytes_needed;
 
@@ -255,7 +254,7 @@ void encrypt_and_integrity_send(const uint8_t* message, uint32_t len )
 
 		memcpy(encrypted_vector, message, len);
 
-  	    for (int i = 0; i < bytes_needed; i++)
+  	    for (uint8_t i = 0; i < bytes_needed; i++)
 	    {
 	    	encrypted_vector[len + i] = bytes_needed;
 	    }
@@ -264,10 +263,8 @@ void encrypt_and_integrity_send(const uint8_t* message, uint32_t len )
 	 struct AES_ctx ctx;
 	 AES_init_ctx_iv(&ctx, key_cfg, iv_cfg);
 	 PRINTF("vector b4 encrypt: %u\r\n", strlen(encrypted_vector));
-
 	 AES_CBC_encrypt_buffer(&ctx, encrypted_vector, payload_len);
 //	PRINTF("vector justafter encrypt: %u\r\n", strlen(encrypted_vector));
-
 
 	 /*Creating Package to be sent */
 	 memcpy(&package,mac_dest, MAC_SIZE);
@@ -275,17 +272,18 @@ void encrypt_and_integrity_send(const uint8_t* message, uint32_t len )
 	 PRINTF("packg just w macs: %u\r\n", strlen(package));
 
 
-	 payload_len +=14;
+	 payload_len ;
 
 	 package[12] = (payload_len >> 8) & 0xFFU;
 	 package[13] = payload_len & 0xFFU;
-/*
+	// package[12] = 0x88;
+	// package[13] = 0xB5;
+
 	 for(int i =0 ; i < payload_len -14 ; i++)
 	 {
 		 package[14 + i] = *(encrypted_vector + i);
 
 	 }
-	 */
 
 	 memcpy(&package[14], encrypted_vector, strlen(encrypted_vector));
 
@@ -302,17 +300,16 @@ void encrypt_and_integrity_send(const uint8_t* message, uint32_t len )
 
 
 // ENET Send package through  Ethernet.
-
+/*
 	 if(payload_len < 64 )
 	 {
 		 EthernetPadding = 64 - payload_len;
 		 memset(&package[payload_len], EthernetPadding, EthernetPadding );
 
 	 }
+*/
 
-
-
-	 encrypt_and_integrity_ENET_TX(package, payload_len+EthernetPadding);
+	 encrypt_and_integrity_ENET_TX(package, payload_len+14);
 
 
 	 free(encrypted_vector);
@@ -329,7 +326,7 @@ void encrypt_and_integrity_ENET_TX(uint8_t* payload, uint32_t payload_len)
 	{
 		if (link)
 		{
-			if (kStatus_Success == ENET_SendFrame(EXAMPLE_ENET, &g_handle, payload, payload_len, 0, false, NULL))
+			if (kStatus_Success == ENET_SendFrame(EXAMPLE_ENET, &g_handle, &payload[0], payload_len, 0, false, NULL))
 			     PRINTF("The frame transmitted success!\r\n");
 			else
 			    PRINTF(" \r\nTransmit frame failed!\r\n");
