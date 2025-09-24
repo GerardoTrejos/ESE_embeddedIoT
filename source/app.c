@@ -57,6 +57,7 @@ int main(void)
 	const uint8_t *message = (uint8_t*)malloc(MAX_MSG);
  	const uint8_t *received = (uint8_t*)(sizeof(uint8_t)*MAX_PCKG_SIZE);
 	status_t status_phy = encrypt_and_integrity_INIT();
+	status_t status;
 		if(status_phy != kStatus_Success)
 		{
 			PRINTF("Phy failed to initialize");
@@ -71,9 +72,16 @@ int main(void)
 
 
   	uint32_t len= 0;
-	uint8_t repetir;
+	uint8_t repetir = 1;
+	PRINTF("Application started");
     do
     {
+
+     //   if(encrypt_and_integrity_receive())
+        // {
+           //     	PRINTF("Received Message");
+       //  }else
+        // {
     	PRINTF("\n=== Main Menu Select a Message to Send===\r\n");
 
     	PRINTF("1: %s\r\n", M1);
@@ -93,10 +101,6 @@ int main(void)
         PRINTF("f: %s\r\n", M15);
         PRINTF("g: %s\r\n", M16);
         char choice = GETCHAR();
-
-
-
-
 
         if (choice == '1') {
             message =  M1;
@@ -139,18 +143,28 @@ int main(void)
         } else if (choice == 'g') {
         	 message= M16;
         } else {
-            PRINTF("Invalid choice. Please enter a number between 1 and 16.\n");
+            PRINTF("Invalid choice. Please enter.\n");
         }
-        len = strlen(message);
-        encrypt_and_integrity_send(message, len);
-       /// end of application ///
-        if(encrypt_and_integrity_receive())
-        {
-        	PRINTF("Received Message");
-        }
+
+        choice = '\0';
+
+
+    //  }
+        if(message != NULL)
+        	encrypt_and_integrity_send(message, strlen(message));
+      do{
+        status = encrypt_and_integrity_receive();
+      }while(status);
+
+
+
+
 
         PRINTF("Deseas mandar otro mensaje 1)si 0)no \r\n ");
         repetir = GETCHAR();
+        	if(repetir == '0')
+        		repetir &=~0xFF;
     }while(repetir);
+    PRINTF("Application end \r\n");
 
 }

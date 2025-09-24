@@ -325,6 +325,8 @@ status_t encrypt_and_integrity_receive()
 {
 status_t status;
 uint32_t length;
+uint8_t dest[MAC_SIZE] = MAC_K64;
+uint8_t origen[MAC_SIZE] = MAC_PC ;
 enet_data_error_stats_t eErrStatic;
     /* Get the Frame size */
         status = ENET_GetRxFrameSize(&g_handle, &length, 0);
@@ -337,19 +339,27 @@ enet_data_error_stats_t eErrStatic;
         status  = ENET_ReadFrame(EXAMPLE_ENET, &g_handle, data, length, 0, NULL);
 				if (status == kStatus_Success)
 				{
-					encrypt_and_integrity_decrypt(data, length);
-				}
-				free(data);
-        }
-    else if (status == kStatus_ENET_RxFrameError)
-    {
-         /* Update the received buffer when error happened. */
-         /* Get the error information of the received g_frame.*/
-        ENET_GetRxErrBeforeReadFrame(&g_handle, &eErrStatic, 0);
-          /* update the receive buffer. */
-        ENET_ReadFrame(EXAMPLE_ENET, &g_handle, NULL, 0, 0, NULL);
-        return status = kStatus_Fail;
-      }
+
+					if(data[0] == dest[0] && data[1] == dest[1] && data[2] == dest[2] && data[3] == dest[3] &&
+					   data[4] == dest[4] && data[5] == dest[5]  )
+						encrypt_and_integrity_decrypt(data, length);
+					else
+					{
+						PRINTF("NOT MY PACKAGE \n\r");
+						free(data);
+						return kStatus_Fail;
+					}
+				}else if (status == kStatus_ENET_RxFrameError)
+					{
+				 /* Update the received buffer when error happened. */
+					/* Get the error information of the received g_frame.*/
+					ENET_GetRxErrBeforeReadFrame(&g_handle, &eErrStatic, 0);
+				  /* update the receive buffer. */
+					ENET_ReadFrame(EXAMPLE_ENET, &g_handle, NULL, 0, 0, NULL);
+					return status = kStatus_Fail;
+					}
+		}else
+			status = kStatus_Fail;
 
   return status;
 
@@ -357,68 +367,35 @@ enet_data_error_stats_t eErrStatic;
 
 
 
-void encrypt_and_integrity_decrypt(const uint8_t *data, uint32_t length)
+void encrypt_and_integrity_decrypt(const uint8_t *data, uint32_t length )
 {
-	uint8_t dest[MAC_SIZE] = MAC_K64;
-	uint8_t origen[MAC_SIZE] =  MAC_PC;
+
+	uint8_t payload_message =0;
 	uint8_t frame_confirmed = 0;
-	uint8_t *load_pckg;
-	uint32_t payload_len= length - 14;
-	uint8_t  vector_len = payload_len - (2 * MAC_SIZE);
+	payload_message += data[12];
+	payload_message += data[13];
 
-
-	load_pckg = (uint8_t *)malloc(payload_len);
-	uint8_t *vector_decrypt = (uint8_t *)malloc(payload_len - (2*MAC_SIZE) );
+	uint8_t *load_pckg = (uint8_t *)malloc(payload_message);
 	if(!load_pckg)
 	{
+		PRINTF("FAILED TO INTIALIZE PAY LOAD \r\n");
 		free(load_pckg);
 	}
 
-	memcpy(&load_pckg, data+14, payload_len );
-
-	for(int i = 0; i < MAC_SIZE; i++)
-	{
-		if(dest[i] == *(load_pckg+i) && origen[i + MAC_SIZE] == *(load_pckg + i + MAC_SIZE) ) //determine if package comes from destination and origen
-		   frame_confirmed = 1;
-		else
-		{
-		 free(data);
-		  break;
-		}
-	}
-
-	if (frame_confirmed)
-	{
-		memcpy(&vector_decrypt, load_pckg + (2*MAC_SIZE), vector_len);
-		free (load_pckg);
-
+	strcpy(load_pckg, &data[14]);
 
 		 // Decrypt in-place
-		struct AES_ctx ctx;
-	    AES_init_ctx_iv(&ctx, KEY_AES, IV_AES);
-	    AES_CBC_decrypt_buffer(&ctx, vector_decrypt, vector_len);
+	struct AES_ctx ctx;
+	AES_init_ctx_iv(&ctx, KEY_AES, IV_AES);
+	AES_CBC_decrypt_buffer(&ctx, load_pckg, payload_message);
 
-	    //removing padding 0z
-	    uint8_t ralloc_len = vector_len;
-	    for(uint8_t i = 0; i < ralloc_len; i++)
-	    {
-	    	if(*(vector_decrypt + i ) == 0x0)
-	    	{
-	    		*(vector_decrypt+i) = *(vector_decrypt + i + 1 );
-	    		ralloc_len--;
-	    		vector_decrypt = realloc(vector_decrypt, 1);
-	    	}
-	    	else
-	    		break;
-	    }
+		//removing padding PCK#7
+	uint8_t padding = load_pckg[payload_message-1];
 
 
+	load_pckg[payload_message - padding]= '\0';
 
-
-	}
-
-
-
+	PRINTF("RESPONSE: %s\r\n", load_pckg);
 
 
 }
