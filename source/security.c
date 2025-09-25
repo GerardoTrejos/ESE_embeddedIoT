@@ -382,7 +382,17 @@ void encrypt_and_integrity_decrypt(const uint8_t *data, uint32_t length )
 		free(load_pckg);
 	}
 
-	strcpy(load_pckg, &data[14]);
+	//strcpy(load_pckg, &data[14]);
+	/*
+	 * commenting strcpy since in response to message 5 there is a 0x00 in 14th which makes
+	 * the message does not copy the buffer.
+	 * memcpy does not allow to copy from a specific address of source buffer
+	 *
+	 * */
+	for(uint8_t i = 0; i < payload_message  ; i++)
+	{
+		load_pckg[i] = data[14 + i];
+	}
 
 		 // Decrypt in-place
 	struct AES_ctx ctx;

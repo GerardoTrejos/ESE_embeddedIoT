@@ -143,7 +143,7 @@ int main(void)
         } else if (choice == 'g') {
         	 message= M16;
         } else {
-            PRINTF("Invalid choice. Please enter.\n");
+            PRINTF("Invalid choice. Please enter a valid one.\n");
         }
 
         choice = '\0';
@@ -151,10 +151,12 @@ int main(void)
 
     //  }
         if(message != NULL)
+        {
         	encrypt_and_integrity_send(message, strlen(message));
-      do{
-        status = encrypt_and_integrity_receive();
-      }while(status);
+        	do{
+        		status = encrypt_and_integrity_receive();
+        	}while(status);
+        }
 
 
 
